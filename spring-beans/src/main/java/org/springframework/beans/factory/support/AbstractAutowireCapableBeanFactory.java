@@ -1535,15 +1535,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
 	/**
-	 * Initialize the given bean instance, applying factory callbacks
-	 * as well as init methods and bean post processors.
+	 * Initialize the given bean instance, applying factory callbacks as well as init methods and bean post processors.<br>
+	 * 使用工厂回调以及初始化方法和bean后处理程序,初始化给定的bean实例，
+	 *
 	 * <p>Called from {@link #createBean} for traditionally defined beans,
-	 * and from {@link #initializeBean} for existing bean instances.
-	 * @param beanName the bean name in the factory (for debugging purposes)
-	 * @param bean the new bean instance we may need to initialize
-	 * @param mbd the bean definition that the bean was created with
-	 * (can also be {@code null}, if given an existing bean instance)
-	 * @return the initialized bean instance (potentially wrapped)
+	 * and from {@link #initializeBean} for existing bean instances.<br>
+	 * 对于传统定义的bean，从createBean调用，对于现有的bean实例，从initializeBean调用。
+	 *
+	 * @param beanName the bean name in the factory (for debugging purposes) 工厂中的bean名称(用于调试目的)
+	 * @param bean     the new bean instance we may need to initialize 我们可能需要初始化的新bean实例
+	 * @param mbd      the bean definition that the bean was created with
+	 *                 (can also be {@code null}, if given an existing bean instance)
+	 *                 创建bean时使用的bean定义(如果给定一个现有的bean实例,也可以为空)
+	 * @return the initialized bean instance (potentially wrapped) 初始化的bean实例(可能被包装)
 	 * @see BeanNameAware
 	 * @see BeanClassLoaderAware
 	 * @see BeanFactoryAware
@@ -1553,6 +1557,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	protected Object initializeBean(final String beanName, final Object bean, RootBeanDefinition mbd) {
 		if (System.getSecurityManager() != null) {
+			//系统安全管理器不为空
+
+			//执行指定的PrivilegedAction，特权由指定的AccessControlContext启用和限制。
+			//该操作使用调用者的保护域所拥有的权限和指定的AccessControlContext所表示的域所拥有的权限的交集来执行。
+			//如果操作的run方法抛出(未检查的)异常，则该异常将通过此方法传播。
+			//如果安装了安全管理器，并且指定的AccessControlContext不是由系统代码创建的，并且调用方的ProtectionDomain没有被授予“createAccessControlContext”SecurityPermission，则该操作将在没有权限的情况下执行。
 			AccessController.doPrivileged(new PrivilegedAction<Object>() {
 				@Override
 				public Object run() {
@@ -1562,6 +1572,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			// 根据bean名称，给bean自动注入相关属性
 			invokeAwareMethods(beanName, bean);
 		}
 
